@@ -1,11 +1,19 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
+const auth = require('./middleware/authorization');
+const encoded = require('./encoded');
+const app = express();
 
-const login = require('./login')
+const login = require('./login');
 
-app.use(express.json())
+app.get('/', (req, res) => {
+  res.send('Hello world');
+});
 
-app.post('/login', login)
+app.use(express.json());
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+/* I am making sure that the user is authenticated by including the middleware function before the encode function */
+app.post('/encode', auth, encoded);
+
+app.post('/login', login);
+
+module.exports = app;
